@@ -22,25 +22,25 @@ TsnHigh:
   TsnHighXdpZcMode: true
   TsnHighXdpWakeupMode: true
   TsnHighXdpBusyPollMode: true
-  TsnHighTxTimeStampEnabled: false
+  TsnHighTxTimeStampEnabled: true
   TsnHighVid: 100
-  TsnHighNumFramesPerCycle: 32
+  TsnHighNumFramesPerCycle: 1
   TsnHighPayloadPattern: |
     TsnHighPayloadPattern
   TsnHighFrameLength: 128
   TsnHighRxQueue: 1
   TsnHighTxQueue: 1
-  TsnHighSocketPriority: 7
+  TsnHighSocketPriority: 6
   TsnHighTxThreadPriority: 98
   TsnHighRxThreadPriority: 98
   TsnHighTxThreadCpu: 2
   TsnHighRxThreadCpu: 2
-  TsnHighInterface: enp4s0
-  TsnHighDestination: a8:74:1d:9d:36:14
+  TsnHighInterface: enp85s0
+  TsnHighDestination: 00:a0:c9:00:00:00
   TsnHighRxWorkloadEnabled: true
   TsnHighRxWorkloadFile: ../workloads/pointer_chasing/pointer_chasing.so
   TsnHighRxWorkloadSetupFunction: ptr_chase_setup
-  TsnHighRxWorkloadSetupArguments: "0x4A4000 0x129000"
+  TsnHighRxWorkloadSetupArguments: "0x4A4000 0xA2000"
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100

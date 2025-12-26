@@ -24,19 +24,19 @@ TsnHigh:
   TsnHighXdpBusyPollMode: true
   TsnHighTxTimeStampEnabled: false
   TsnHighVid: 100
-  TsnHighNumFramesPerCycle: 32
+  TsnHighNumFramesPerCycle: 1
   TsnHighPayloadPattern: |
     TsnHighPayloadPattern
   TsnHighFrameLength: 128
   TsnHighRxQueue: 1
   TsnHighTxQueue: 1
-  TsnHighSocketPriority: 7
+  TsnHighSocketPriority: 6
   TsnHighTxThreadPriority: 98
   TsnHighRxThreadPriority: 98
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
-  TsnHighInterface: enp4s0
-  TsnHighDestination: a8:74:1d:9d:98:d8
+  TsnHighInterface: enp85s0
+  TsnHighDestination: f0:b2:b9:11:b4:58
 Log:
   LogThreadPriority: 1
   LogThreadCpu: 0
