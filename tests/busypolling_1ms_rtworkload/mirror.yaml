@@ -33,8 +33,8 @@ TsnHigh:
   TsnHighSocketPriority: 7
   TsnHighTxThreadPriority: 98
   TsnHighRxThreadPriority: 98
-  TsnHighTxThreadCpu: 2
-  TsnHighRxThreadCpu: 2
+  TsnHighTxThreadCpu: 1
+  TsnHighRxThreadCpu: 1
   TsnHighInterface: enp85s0
   TsnHighDestination: 00:a0:c9:00:00:00
   TsnHighRxWorkloadEnabled: true
@@ -44,7 +44,7 @@ TsnHigh:
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100
-  TsnHighRxWorkloadThreadCpu: 2
+  TsnHighRxWorkloadThreadCpu: 1
   TsnHighRxWorkloadThreadPriority: 80
 Log:
   LogThreadPriority: 1

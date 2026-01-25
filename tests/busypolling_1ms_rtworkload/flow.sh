@@ -63,4 +63,13 @@ igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
 
+sleep 1
+sudo cpupower -c 1 idle-set -d 0
+sudo cpupower -c 1 idle-set -d 1
+sudo cpupower -c 1 idle-set -d 2
+sudo cpupower -c 1 idle-set -d 3
+sudo cpupower -c 1 frequency-set --min 4000M --max 4000M -g performance
+sudo tuna --cpus=1 --isolate
+sudo bash -c 'echo 1 > /proc/irq/164/smp_affinity_list'
+
 exit 0

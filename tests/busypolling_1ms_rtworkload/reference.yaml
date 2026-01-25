@@ -13,7 +13,7 @@ Application:
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 1ms
   ApplicationTxBaseOffsetNS: 700us
-  ApplicationRxBaseOffsetNS: 300us
+  ApplicationRxBaseOffsetNS: 100us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
