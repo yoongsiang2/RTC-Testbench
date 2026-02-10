@@ -63,4 +63,28 @@ igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
 
+sleep 1
+sudo cpupower -c 1 idle-set -d 0
+sudo cpupower -c 1 idle-set -d 1
+sudo cpupower -c 1 idle-set -d 2
+sudo cpupower -c 1 idle-set -d 3
+sudo cpupower -c 1 frequency-set --min 4000M --max 4000M -g performance
+sudo tuna --cpus=1 --isolate
+
+# Dynamically find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
+IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
+    sudo bash -c "echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
+fi
+
+# sudo bash -c 'echo -1 > /proc/sys/kernel/sched_rt_runtime_us'
+# sudo ethtool -C ${INTERFACE} rx-usecs 0
+# sudo ethtool --set-eee ${INTERFACE} eee off
+
+sudo chmod +x cat.sh
+sudo ./cat.sh
+
 exit 0
