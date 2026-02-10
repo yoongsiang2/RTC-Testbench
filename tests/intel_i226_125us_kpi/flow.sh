@@ -33,8 +33,8 @@ igc_start "${INTERFACE}"
 #
 # Split traffic between TSN streams, priority and everything else.
 #
-ENTRY1_NS="65000" # Everything else
-ENTRY2_NS="60000" # TSN Streams / Prio
+ENTRY1_NS="10000" # Everything else
+ENTRY2_NS="115000" # TSN Streams / Prio
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -55,12 +55,36 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
 #
 # PCP 6   - Rx Q 1 - TSN High
 # PCP X   - Rx Q 0 - Everything else
-#
+
 RXQUEUES=(0 1 0 0 0 0 0 0 0 0)
 igc_rx_queues_assign "${INTERFACE}" RXQUEUES
 
 igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
+
+sleep 1
+sudo cpupower -c 1 idle-set -d 0
+sudo cpupower -c 1 idle-set -d 1
+sudo cpupower -c 1 idle-set -d 2
+sudo cpupower -c 1 idle-set -d 3
+sudo cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
+sudo tuna --cpus=1 --isolate
+
+# Dynamically find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
+IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
+    sudo bash -c "echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
+fi
+
+sudo bash -c 'echo -1 > /proc/sys/kernel/sched_rt_runtime_us'
+sudo ethtool -C ${INTERFACE} rx-usecs 0
+sudo ethtool --set-eee ${INTERFACE} eee off
+
+sudo chmod +x cat.sh
+sudo ./cat.sh
 
 exit 0

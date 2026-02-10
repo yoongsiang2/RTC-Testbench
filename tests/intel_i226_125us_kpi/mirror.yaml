@@ -11,8 +11,8 @@ Application:
   ApplicationClockId: CLOCK_TAI
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 125us
-  ApplicationTxBaseOffsetNS: 65us
-  ApplicationRxBaseOffsetNS: 20us
+  ApplicationTxBaseOffsetNS: 70us
+  ApplicationRxBaseOffsetNS: 15us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
@@ -30,12 +30,12 @@ TsnHigh:
   TsnHighRxQueue: 1
   TsnHighTxQueue: 1
   TsnHighSocketPriority: 6
-  TsnHighTxThreadPriority: 98
-  TsnHighRxThreadPriority: 98
+  TsnHighTxThreadPriority: 84
+  TsnHighRxThreadPriority: 84
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
-  TsnHighInterface: enp3s0
-  TsnHighDestination: a8:74:1d:9d:36:14
+  TsnHighInterface: enp85s0
+  TsnHighDestination: 00:a0:c9:00:00:00
   TsnHighRxWorkloadEnabled: true
   TsnHighRxWorkloadFile: ../workloads/pointer_chasing/pointer_chasing.so
   TsnHighRxWorkloadSetupFunction: ptr_chase_setup
