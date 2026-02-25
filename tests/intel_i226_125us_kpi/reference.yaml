@@ -11,7 +11,7 @@ Application:
   ApplicationClockId: CLOCK_TAI
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 125us
-  ApplicationTxBaseOffsetNS: 90us
+  ApplicationTxBaseOffsetNS: 70us
   ApplicationRxBaseOffsetNS: 20us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
@@ -31,7 +31,7 @@ TsnHigh:
   TsnHighTxQueue: 1
   TsnHighSocketPriority: 6
   TsnHighTxThreadPriority: 84
-  TsnHighRxThreadPriority: 84
+  TsnHighRxThreadPriority: 82
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
   TsnHighInterface: enp85s0

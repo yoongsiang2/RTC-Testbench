@@ -33,8 +33,8 @@ igc_start "${INTERFACE}"
 #
 # Split traffic between TSN streams, priority and everything else.
 #
-ENTRY1_NS="10000" # Everything else
-ENTRY2_NS="115000" # TSN Streams / Prio
+ENTRY1_NS="50000"  # TSN Streams
+ENTRY2_NS="75000"  # Everything else
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -46,8 +46,8 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   map 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 \
   queues 1@0 1@1 \
   base-time ${BASETIME} \
-  sched-entry S 0x03 ${ENTRY1_NS} \
-  sched-entry S 0x02 ${ENTRY2_NS} \
+  sched-entry S 0x02 ${ENTRY1_NS} \
+  sched-entry S 0x01 ${ENTRY2_NS} \
   flags 0x02
 
 #
@@ -86,5 +86,10 @@ sudo ethtool --set-eee ${INTERFACE} eee off
 
 sudo chmod +x cat.sh
 sudo ./cat.sh
+
+echo "setting 620 MSR:"
+rdmsr -p 1 0x620
+wrmsr -p 1 0x620 0x2424
+rdmsr -p 1 0x620
 
 exit 0
