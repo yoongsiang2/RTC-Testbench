@@ -68,7 +68,7 @@ sudo cpupower -c 1 idle-set -d 0
 sudo cpupower -c 1 idle-set -d 1
 sudo cpupower -c 1 idle-set -d 2
 sudo cpupower -c 1 idle-set -d 3
-sudo cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
+sudo cpupower -c 1 frequency-set --min 4200M --max 4200M -g performance
 sudo tuna --cpus=1 --isolate
 
 # Dynamically find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
