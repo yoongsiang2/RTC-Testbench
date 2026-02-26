@@ -26,7 +26,7 @@ BASETIME=$3
 
 load_kernel_modules
 
-# napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
+napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
 
 igc_start "${INTERFACE}"
 
