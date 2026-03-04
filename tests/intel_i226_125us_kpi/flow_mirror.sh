@@ -68,23 +68,30 @@ sudo cpupower -c 1 idle-set -d 0
 sudo cpupower -c 1 idle-set -d 1
 sudo cpupower -c 1 idle-set -d 2
 sudo cpupower -c 1 idle-set -d 3
-sudo cpupower -c 1 frequency-set --min 4200M --max 4200M -g performance
+sudo cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
 sudo tuna --cpus=1 --isolate
+sudo cpupower -c 2 idle-set -d 0
+sudo cpupower -c 2 idle-set -d 1
+sudo cpupower -c 2 idle-set -d 2
+sudo cpupower -c 2 idle-set -d 3
+sudo cpupower -c 2 frequency-set --min 3100M --max 3100M -g performance
+sudo tuna --cpus=2 --isolate
+
 
 # Dynamically find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
 IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
 if [ -n "$IRQ_NUM" ]; then
-    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
-    sudo bash -c "echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 2"
+    sudo bash -c "echo 2 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
 else
     echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
 fi
 
-# Dynamically find IRQ number for ${INTERFACE} interface and set its affinity to CPU 1
+# Dynamically find IRQ number for ${INTERFACE} interface and set its affinity to CPU 2
 IRQ_NUM=$(grep -E "${INTERFACE}$" /proc/interrupts | awk '{print $1}' | sed 's/://')
 if [ -n "$IRQ_NUM" ]; then
-    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 1"
-    sudo bash -c "echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 2"
+    sudo bash -c "echo 2 > /proc/irq/${IRQ_NUM}/smp_affinity_list"
 else
     echo "Warning: Could not find IRQ for ${INTERFACE}"
 fi
