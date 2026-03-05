@@ -30,8 +30,8 @@ TsnHigh:
   TsnHighRxQueue: 1
   TsnHighTxQueue: 1
   TsnHighSocketPriority: 6
-  TsnHighTxThreadPriority: 84
-  TsnHighRxThreadPriority: 82
+  TsnHighTxThreadPriority: 98
+  TsnHighRxThreadPriority: 98
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
   TsnHighInterface: enp85s0
