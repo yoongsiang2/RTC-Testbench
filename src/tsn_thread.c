@@ -413,6 +413,15 @@ static void *tsn_xdp_tx_thread_routine(void *data)
 			}
 		}
 
+		/* Record Tx thread start frame in rtt backlog */
+		{
+			struct round_trip_context *rtt = &round_trip_contexts[thread_context->frame_type];
+			size_t idx = (sequence_counter + 1) % rtt->backlog_len;
+			struct timespec tx_time;
+			clock_gettime(app_config.application_clock_id, &tx_time);
+			rtt->backlog[idx].tx_01 = ts_to_ns(&tx_time);
+		}
+
 		workload_check_finished(thread_context);
 
 		/*
