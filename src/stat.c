@@ -305,11 +305,27 @@ static void stat_frame_sent_latency_common(struct statistics *stat, enum stat_fr
 }
 
 static void stat_frame_proc_first_common(struct statistics *stat, enum stat_frame_type frame_type,
-					 uint64_t proc_first_us)
+					 uint64_t proc_first_us, uint64_t cycle_number,
+					 uint64_t rx_hw_ts, uint64_t tx_hw_ts,
+					 uint64_t rx_app_ts, uint64_t rx_sw_ts,
+					 uint64_t tx_sw_ts)
 {
 	/* Check for outliers - processing time exceeding cycle time */
-	if (proc_first_us > app_config.application_base_cycle_time_ns / 1000)
+	if (proc_first_us > app_config.application_base_cycle_time_ns / 1000) {
 		stat->proc_first_outliers++;
+
+		/* Always log outlier with all timestamps */
+		log_message(LOG_LEVEL_WARNING,
+			    "ProcFirst OUTLIER [%s] Cycle %" PRIu64 ": %" PRIu64
+			    " us (exceeds cycle time %" PRIu64 " us) | "
+			    "RX HW TS: %" PRIu64 " ns | RX SW TS: %" PRIu64 " ns | "
+			    "RX App TS: %" PRIu64 " ns | "
+			    "TX SW TS: %" PRIu64 " ns | TX HW TS: %" PRIu64 " ns\n",
+			    stat_frame_type_to_string(frame_type), cycle_number,
+			    proc_first_us,
+			    app_config.application_base_cycle_time_ns / 1000, rx_hw_ts,
+			    rx_sw_ts, rx_app_ts, tx_sw_ts, tx_hw_ts);
+	}
 
 	stat_update_min_max(proc_first_us, &stat->proc_first_min, &stat->proc_first_max);
 	stat->proc_first_count++;
@@ -318,11 +334,29 @@ static void stat_frame_proc_first_common(struct statistics *stat, enum stat_fram
 }
 
 static void stat_frame_proc_batch_common(struct statistics *stat, enum stat_frame_type frame_type,
-					 uint64_t proc_batch_us)
+					 uint64_t proc_batch_us, uint64_t cycle_number,
+					 uint64_t rx_hw_ts, uint64_t last_tx_hw_ts,
+					 uint64_t rx_app_ts, uint64_t rx_sw_ts,
+					 uint64_t tx_sw_ts)
 {
 	/* Check for outliers - processing time exceeding cycle time */
-	if (proc_batch_us > app_config.application_base_cycle_time_ns / 1000)
+	if (proc_batch_us > app_config.application_base_cycle_time_ns / 1000) {
 		stat->proc_batch_outliers++;
+
+		/* Log outlier with timestamps for debugging */
+		if (rx_hw_ts != 0 && last_tx_hw_ts != 0) {
+			log_message(LOG_LEVEL_WARNING,
+				    "ProcBatch OUTLIER [%s] Cycle %" PRIu64 ": %" PRIu64
+				    " us (exceeds cycle time %" PRIu64 " us) | "
+				    "RX HW TS: %" PRIu64 " ns | RX SW TS: %" PRIu64 " ns | "
+				    "RX App TS: %" PRIu64 " ns | "
+				    "TX SW TS: %" PRIu64 " ns | Last TX HW TS: %" PRIu64 " ns\n",
+				    stat_frame_type_to_string(frame_type), cycle_number,
+				    proc_batch_us,
+				    app_config.application_base_cycle_time_ns / 1000, rx_hw_ts,
+				    rx_sw_ts, rx_app_ts, tx_sw_ts, last_tx_hw_ts);
+		}
+	}
 
 	stat_update_min_max(proc_batch_us, &stat->proc_batch_min, &stat->proc_batch_max);
 	stat->proc_batch_count++;
@@ -386,7 +420,9 @@ static void stat_frame_proc_first_per_period(enum stat_frame_type frame_type,
 {
 	struct statistics *stat_per_period = &statistics_per_period[frame_type];
 
-	stat_frame_proc_first_common(stat_per_period, frame_type, proc_first_us);
+	/* Per-period logging: no timestamp details needed */
+	stat_frame_proc_first_common(stat_per_period, frame_type, proc_first_us, 0, 0, 0, 0,
+				     0, 0);
 }
 
 static void stat_frame_proc_batch_per_period(enum stat_frame_type frame_type,
@@ -394,7 +430,9 @@ static void stat_frame_proc_batch_per_period(enum stat_frame_type frame_type,
 {
 	struct statistics *stat_per_period = &statistics_per_period[frame_type];
 
-	stat_frame_proc_batch_common(stat_per_period, frame_type, proc_batch_us);
+	/* Per-period logging: no timestamp details needed */
+	stat_frame_proc_batch_common(stat_per_period, frame_type, proc_batch_us, 0, 0, 0, 0,
+				     0, 0);
 }
 #endif
 #else
@@ -559,6 +597,8 @@ void stat_frame_received(enum stat_frame_type frame_type, uint64_t cycle_number,
 			size_t idx = get_first_frame_backlog_idx(cycle_number, frame_type,
 								 rtt->backlog_len);
 			rtt->backlog[idx].rx_hw_ts = rx_hw_timestamp;
+			rtt->backlog[idx].rx_sw_ts = rx_sw_timestamp;
+			rtt->backlog[idx].rx_app_ts = curr_time;
 
 			log_message(LOG_LEVEL_DEBUG,
 				    "%s: Stored RX HW timestamp %" PRIu64 " for cycle %" PRIu64
@@ -678,6 +718,9 @@ void stat_proc_first_latency(enum stat_frame_type frame_type, uint64_t cycle_num
 
 	if (tx_hw_timestamp > rx_hw_ts) {
 		uint64_t proc_first_latency = (tx_hw_timestamp - rx_hw_ts) / 1000;
+		uint64_t rx_app_ts = rtt->backlog[idx].rx_app_ts;
+		uint64_t rx_sw_ts = rtt->backlog[idx].rx_sw_ts;
+		uint64_t tx_sw_ts = rtt->backlog[idx].sw_ts;
 
 		log_message(LOG_LEVEL_DEBUG,
 			    "ProcFirst [%s] Cycle %" PRIu64 ": %" PRIu64 " us (RX HW: %" PRIu64
@@ -686,7 +729,9 @@ void stat_proc_first_latency(enum stat_frame_type frame_type, uint64_t cycle_num
 			    rx_hw_ts, tx_hw_timestamp);
 
 		/* Update global stats */
-		stat_frame_proc_first_common(stat, frame_type, proc_first_latency);
+		stat_frame_proc_first_common(stat, frame_type, proc_first_latency, cycle_number,
+					     rx_hw_ts, tx_hw_timestamp, rx_app_ts, rx_sw_ts,
+					     tx_sw_ts);
 
 		/* Update stats per collection interval */
 		stat_frame_proc_first_per_period(frame_type, proc_first_latency);
@@ -735,6 +780,9 @@ void stat_proc_batch_latency(enum stat_frame_type frame_type, uint64_t cycle_num
 
 	if (last_tx_hw_timestamp > rx_hw_ts) {
 		uint64_t proc_batch_latency = (last_tx_hw_timestamp - rx_hw_ts) / 1000;
+		uint64_t rx_app_ts = rtt->backlog[idx].rx_app_ts;
+		uint64_t rx_sw_ts = rtt->backlog[idx].rx_sw_ts;
+		uint64_t tx_sw_ts = rtt->backlog[idx].sw_ts;
 
 		log_message(LOG_LEVEL_DEBUG,
 			    "ProcBatch [%s] Cycle %" PRIu64 ": %" PRIu64 " us (1st RX HW: %" PRIu64
@@ -743,7 +791,9 @@ void stat_proc_batch_latency(enum stat_frame_type frame_type, uint64_t cycle_num
 			    rx_hw_ts, last_tx_hw_timestamp);
 
 		/* Update global stats */
-		stat_frame_proc_batch_common(stat, frame_type, proc_batch_latency);
+		stat_frame_proc_batch_common(stat, frame_type, proc_batch_latency, cycle_number,
+					     rx_hw_ts, last_tx_hw_timestamp, rx_app_ts,
+					     rx_sw_ts, tx_sw_ts);
 
 		/* Update stats per collection interval */
 		stat_frame_proc_batch_per_period(frame_type, proc_batch_latency);
