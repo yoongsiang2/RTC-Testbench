@@ -11,11 +11,11 @@ set -e
 cd "$(dirname "$0")"
 
 # Start PTP
-../../../scripts/ptp.sh enp3s0
+../../../scripts/ptp.sh enp85s0
 sleep 30
 
 # Configure flow
-./flow_ref.sh enp3s0
+./flow_ref.sh enp85s0
 sleep 30
 
 # Start one instance of reference application
