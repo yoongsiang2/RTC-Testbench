@@ -565,14 +565,14 @@ void stat_frame_sent_latency(enum stat_frame_type frame_type, uint64_t seq)
 			    (unsigned long long)hw_ts, idx);
 		
 		log_message(LOG_LEVEL_ERROR,
-			    "TxLatency [%s] Adjacent entries: idx-1=%zu (SW %llu ns, HW %llu ns), idx+1=%zu (SW %llu ns, HW %llu ns)\n",
+			    "TxLatency [%s] Adjacent entries: idx-1=%zu (SW %llu ns, HW %llu ns), idx-2=%zu (SW %llu ns, HW %llu ns)\n",
 			    stat_frame_type_to_string(frame_type), 
 			    (idx - 1 + rtt->backlog_len) % rtt->backlog_len,
 			    (unsigned long long)rtt->backlog[(idx - 1 + rtt->backlog_len) % rtt->backlog_len].sw_ts,
 			    (unsigned long long)rtt->backlog[(idx - 1 + rtt->backlog_len) % rtt->backlog_len].hw_ts,
-			    (idx + 1) % rtt->backlog_len,
-			    (unsigned long long)rtt->backlog[(idx + 1) % rtt->backlog_len].sw_ts,
-			    (unsigned long long)rtt->backlog[(idx + 1) % rtt->backlog_len].hw_ts);
+			    (idx - 2 + rtt->backlog_len) % rtt->backlog_len,
+			    (unsigned long long)rtt->backlog[(idx - 2 + rtt->backlog_len) % rtt->backlog_len].sw_ts,
+			    (unsigned long long)rtt->backlog[(idx - 2 + rtt->backlog_len) % rtt->backlog_len].hw_ts);
 	}
 }
 #endif

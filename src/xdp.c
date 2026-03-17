@@ -595,6 +595,15 @@ void xdp_complete_tx(struct xdp_socket *xsk)
 			struct xsk_tx_metadata *meta =
 				(struct xsk_tx_metadata *)(data - sizeof(struct xsk_tx_metadata));
 
+			/* Print tx_timestamp for each packet when multiple completions */
+			if (received > 1) {
+				log_message(LOG_LEVEL_ERROR,
+					    "XdpTx: Completion[%d]: addr=0x%llx, tx_timestamp=%llu ns, flags=0x%llx\n",
+					    i, (unsigned long long)addr,
+					    (unsigned long long)meta->completion.tx_timestamp,
+					    (unsigned long long)meta->flags);
+			}
+
 			/* Only process completions that have timestamp metadata */
 			if (meta->flags & XDP_TXMD_FLAGS_TIMESTAMP) {
 				xdp_process_tx_timestamp(xsk, idx_cq + i);
