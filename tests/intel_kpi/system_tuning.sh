@@ -14,7 +14,7 @@ cpupower -c 1 idle-set -d 0
 cpupower -c 1 idle-set -d 1
 cpupower -c 1 idle-set -d 2
 cpupower -c 1 idle-set -d 3
-cpupower -c 1 frequency-set --min 4200M --max 4200M -g performance
+cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
 tuna --cpus=1 --isolate
 
 echo "setting 620 MSR:"
