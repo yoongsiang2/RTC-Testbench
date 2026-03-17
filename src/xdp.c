@@ -142,6 +142,8 @@ static void xdp_process_tx_timestamp(struct xdp_socket *xsk, uint32_t idx_cq)
 
 		/* Use seq_lagged for now, but only process if HW timestamp is valid */
 		uint64_t seq = xsk->tx_hwts.seq_lagged;
+		/* xsk_ring_cons__peek(umem.cq) will tell once Tx HWTS is available */
+		seq = idx_cq;
 		size_t idx = seq % rtt->backlog_len;
 
 		/* Continue only if both HW and SW timestamps are valid */
