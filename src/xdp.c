@@ -223,7 +223,7 @@ static void xdp_process_tx_timestamp(struct xdp_socket *xsk, uint32_t idx_cq)
 		uint64_t seq = xsk->tx_hwts.seq_lagged;
 		size_t idx = seq % rtt->backlog_len;
 
-		log_message(LOG_LEVEL_WARNING,
+		log_message(LOG_LEVEL_ERROR,
 			    "XDP TX HW timestamp missing for expected seq %" PRIu64 ", idx=%zu\n",
 			    seq, idx);
 	}
@@ -583,6 +583,12 @@ void xdp_complete_tx(struct xdp_socket *xsk)
 #ifdef TX_TIMESTAMP
 	if (xsk->tx_hwtstamp_mode) {
 		/* Process all TX completions */
+		if (received > 1) {
+			log_message(LOG_LEVEL_ERROR,
+				    "XdpTx: Processing multiple completions: received=%u, idx_cq=%u\n",
+				    received, idx_cq);
+		}
+
 		for (i = 0; i < received; ++i) {
 			uint64_t addr = *xsk_ring_cons__comp_addr(&xsk->umem.cq, idx_cq + i);
 			unsigned char *data = xsk_umem__get_data(xsk->umem.buffer, addr);

@@ -551,18 +551,28 @@ void stat_frame_sent_latency(enum stat_frame_type frame_type, uint64_t seq)
 		stat_frame_sent_latency_per_period(frame_type, latency);
 
 		/* Clear HW timestamp to prevent double processing */
-		rtt->backlog[idx].hw_ts = 0;
+		// rtt->backlog[idx].hw_ts = 0;
 
 	} else {
 		/* If HW timestamp isn't available after 1 cycle, consider it a miss */
 		stat->tx_hw_timestamp_missing++;
 		stat_per_period->tx_hw_timestamp_missing++;
 
-		log_message(LOG_LEVEL_DEBUG,
+		log_message(LOG_LEVEL_ERROR,
 			    "TxLatency [%s] Seq %" PRIu64
-			    ": No HW timestamp available after 1 cycle (SW %llu ns), idx=%zu\n",
+			    ": No HW timestamp available after 1 cycle (SW %llu ns, HW %llu ns), idx=%zu\n",
 			    stat_frame_type_to_string(frame_type), seq, (unsigned long long)sw_ts,
-			    idx);
+			    (unsigned long long)hw_ts, idx);
+		
+		log_message(LOG_LEVEL_ERROR,
+			    "TxLatency [%s] Adjacent entries: idx-1=%zu (SW %llu ns, HW %llu ns), idx+1=%zu (SW %llu ns, HW %llu ns)\n",
+			    stat_frame_type_to_string(frame_type), 
+			    (idx - 1 + rtt->backlog_len) % rtt->backlog_len,
+			    (unsigned long long)rtt->backlog[(idx - 1 + rtt->backlog_len) % rtt->backlog_len].sw_ts,
+			    (unsigned long long)rtt->backlog[(idx - 1 + rtt->backlog_len) % rtt->backlog_len].hw_ts,
+			    (idx + 1) % rtt->backlog_len,
+			    (unsigned long long)rtt->backlog[(idx + 1) % rtt->backlog_len].sw_ts,
+			    (unsigned long long)rtt->backlog[(idx + 1) % rtt->backlog_len].hw_ts);
 	}
 }
 #endif
@@ -738,7 +748,7 @@ void stat_proc_first_latency(enum stat_frame_type frame_type, uint64_t cycle_num
 
 		/* Not clearing RX HW timestamp here - it will be cleared by ProcBatch */
 	} else {
-		log_message(LOG_LEVEL_DEBUG,
+		log_message(LOG_LEVEL_ERROR,
 			    "ProcFirst [%s] Cycle %" PRIu64 ": TX HW timestamp (%" PRIu64
 			    ") <= RX HW timestamp (%" PRIu64 ")\n",
 			    stat_frame_type_to_string(frame_type), cycle_number, tx_hw_timestamp,
