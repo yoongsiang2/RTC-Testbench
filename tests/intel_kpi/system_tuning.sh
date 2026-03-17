@@ -16,6 +16,12 @@ cpupower -c 1 idle-set -d 2
 cpupower -c 1 idle-set -d 3
 cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
 tuna --cpus=1 --isolate
+cpupower -c 2 idle-set -d 0
+cpupower -c 2 idle-set -d 1
+cpupower -c 2 idle-set -d 2
+cpupower -c 2 idle-set -d 3
+cpupower -c 2 frequency-set --min 3100M --max 3100M -g performance
+tuna --cpus=2 --isolate
 
 echo "setting 620 MSR:"
 rdmsr -p 1 0x620
