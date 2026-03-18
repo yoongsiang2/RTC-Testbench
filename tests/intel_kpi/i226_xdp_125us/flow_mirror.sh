@@ -26,6 +26,8 @@ BASETIME=$3
 
 load_kernel_modules
 
+napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
+
 igc_start "${INTERFACE}"
 ethtool -C ${INTERFACE} rx-usecs 0
 
@@ -56,8 +58,6 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
 # PCP X - Rx Q 0 - Everything else
 RXQUEUES=(0 1 0 0 0 0 0 0 0 0)
 igc_rx_queues_assign "${INTERFACE}" RXQUEUES
-
-igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
 
