@@ -34,8 +34,8 @@ ethtool -C ${INTERFACE} rx-usecs 0
 #
 # Split traffic between TSN High Streams and everything else.
 #
-ENTRY1_NS="500000"  # TSN High Streams
-ENTRY2_NS="500000"  # Everything else
+ENTRY1_NS="500000" # TSN High Streams
+ENTRY2_NS="500000" # Everything else
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -58,8 +58,6 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
 # PCP X - Rx Q 0 - Everything else
 RXQUEUES=(0 1 0 0 0 0 0 0 0 0)
 igc_rx_queues_assign "${INTERFACE}" RXQUEUES
-
-igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
 
