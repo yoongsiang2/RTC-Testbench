@@ -8,7 +8,7 @@
 # CAT (Cache Allocation Technology) Setup Script for 16 CPU System.
 #
 
-RT_TEST_CORE=1
+RT_TEST_CORES=(1 2)
 
 L2_BASE_REG_MSR=0xd10
 L2_HIGHEST_COS_NUMBER=8
@@ -41,8 +41,8 @@ DEFAULT_L3_CORE_MASK=0xfff
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 echo "=== CAT Configuration for 16 CPU System ==="
-echo "RT Cores: $RT_TEST_CORE"
-echo "BE Cores: 0,2-15"
+echo "RT Cores: ${RT_TEST_CORES[*]}"
+echo "BE Cores: 0,3-15"
 echo ""
 
 # Check CAT support
@@ -185,8 +185,8 @@ echo ""
 echo "=== Phase 6: Configuring core associativity ==="
 
 # Configure Best Effort cores (all except RT cores)
-echo "Configuring Best Effort cores (0,2,3,4,5,6,7,8,9,10,11,12,13,14,15)..."
-be_cores=(0 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+echo "Configuring Best Effort cores (0,3,4,5,6,7,8,9,10,11,12,13,14,15)..."
+be_cores=(0 3 4 5 6 7 8 9 10 11 12 13 14 15)
 be_mask=$((L2_L3_BE_BIG_CORE_ASSOCIATIVITY << 32))
 
 for core in "${be_cores[@]}"; do
@@ -196,13 +196,15 @@ for core in "${be_cores[@]}"; do
 done
 
 # Configure Real Time cores
-echo -e "\nConfiguring Real Time cores ($RT_TEST_CORE)..."
+echo -e "\nConfiguring Real Time cores (${RT_TEST_CORES[*]})..."
 rt_mask=$((L2_L3_RT_BIG_CORE_ASSOCIATIVITY << 32))
 
-# RT Core
-wrmsr -p $RT_TEST_CORE $IA32_PQR_ASSOC_MSR $rt_mask
-value=$(rdmsr -p $RT_TEST_CORE $IA32_PQR_ASSOC_MSR)
-printf "RT core: %d reg: %x = %s\n" $RT_TEST_CORE $IA32_PQR_ASSOC_MSR $value
+# RT Cores
+for rt_core in "${RT_TEST_CORES[@]}"; do
+    wrmsr -p $rt_core $IA32_PQR_ASSOC_MSR $rt_mask
+    value=$(rdmsr -p $rt_core $IA32_PQR_ASSOC_MSR)
+    printf "RT core: %d reg: %x = %s\n" $rt_core $IA32_PQR_ASSOC_MSR $value
+done
 echo ""
 echo "=== Final Verification ==="
 
@@ -210,7 +212,14 @@ echo "=== Final Verification ==="
 echo "Final L2/L3 Core Associativity:"
 for core in {0..15}; do
     value=$(rdmsr -p $core $IA32_PQR_ASSOC_MSR)
-    if [[ $core -eq $RT_TEST_CORE ]]; then
+    is_rt_core=false
+    for rt_core in "${RT_TEST_CORES[@]}"; do
+        if [[ $core -eq $rt_core ]]; then
+            is_rt_core=true
+            break
+        fi
+    done
+    if [[ $is_rt_core == true ]]; then
         printf "core: %d (RT) reg: %x = %s\n" $core $IA32_PQR_ASSOC_MSR $value
     else
         printf "core: %d (BE) reg: %x = %s\n" $core $IA32_PQR_ASSOC_MSR $value
@@ -222,6 +231,6 @@ echo "=== CAT Configuration Complete ==="
 echo "Summary:"
 echo "- L2 cache: 8 waymask registers configured"
 echo "- L3 cache: 16 waymask registers configured"
-echo "- RT cores (1): Configured for Real-Time workloads"
-echo "- BE cores (0,2-15): Configured for Best-Effort workloads"
+echo "- RT cores (${RT_TEST_CORES[*]}): Configured for Real-Time workloads"
+echo "- BE cores (0,3-15): Configured for Best-Effort workloads"
 echo "- All MSR operations completed successfully"
