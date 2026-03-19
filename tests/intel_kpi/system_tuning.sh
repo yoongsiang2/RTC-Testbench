@@ -16,8 +16,13 @@ cpupower -c 1 idle-set -d 2
 cpupower -c 1 idle-set -d 3
 cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
 tuna --cpus=1 --isolate
+cpupower -c 2 idle-set -d 0
+cpupower -c 2 idle-set -d 1
+cpupower -c 2 idle-set -d 2
+cpupower -c 2 idle-set -d 3
+cpupower -c 2 frequency-set --min 3100M --max 3100M -g performance
+tuna --cpus=2 --isolate
 cpupower -c 0 frequency-set --min 400M --max 2100M -g powersave
-cpupower -c 2 frequency-set --min 400M --max 2100M -g powersave
 cpupower -c 3 frequency-set --min 400M --max 2100M -g powersave
 cpupower -c 4 frequency-set --min 400M --max 2100M -g powersave
 cpupower -c 5 frequency-set --min 400M --max 2100M -g powersave
