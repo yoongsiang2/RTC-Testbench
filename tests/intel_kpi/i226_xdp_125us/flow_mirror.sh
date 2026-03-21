@@ -26,8 +26,6 @@ BASETIME=$3
 
 load_kernel_modules
 
-napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
-
 igc_start "${INTERFACE}"
 ethtool -C ${INTERFACE} rx-usecs 0
 
@@ -70,6 +68,15 @@ else
     echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
 fi
 
-echo 2 > /sys/class/net/${INTERFACE}/queues/tx-1/xps_cpus
+# Find IRQ number for ${INTERFACE} (Tx HW ts irq) and set its affinity to CPU 1
+IRQ_NUM=$(grep -E "${INTERFACE}$" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 1"
+    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}"
+fi
+
+# echo 2 > /sys/class/net/${INTERFACE}/queues/tx-1/xps_cpus
 
 exit 0
