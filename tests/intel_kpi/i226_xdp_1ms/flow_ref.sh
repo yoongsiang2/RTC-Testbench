@@ -70,6 +70,6 @@ else
     echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
 fi
 
-echo 2 > /sys/class/net/${INTERFACE}/queues/tx-1/xps_cpus
+# echo 2 > /sys/class/net/${INTERFACE}/queues/tx-1/xps_cpus
 
 exit 0
