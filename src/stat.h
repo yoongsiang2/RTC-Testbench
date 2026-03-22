@@ -130,6 +130,7 @@ struct rtt_entry {
 	uint64_t rx_hw_ts;
 	uint64_t rx_app_ts;
 	uint64_t rx_sw_ts;
+	uint64_t tx_01;
 };
 
 struct round_trip_context {

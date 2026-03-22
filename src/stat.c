@@ -315,16 +315,24 @@ static void stat_frame_proc_first_common(struct statistics *stat, enum stat_fram
 		stat->proc_first_outliers++;
 
 		/* Always log outlier with all timestamps */
-		log_message(LOG_LEVEL_WARNING,
-			    "ProcFirst OUTLIER [%s] Cycle %" PRIu64 ": %" PRIu64
-			    " us (exceeds cycle time %" PRIu64 " us) | "
-			    "RX HW TS: %" PRIu64 " ns | RX SW TS: %" PRIu64 " ns | "
-			    "RX App TS: %" PRIu64 " ns | "
-			    "TX SW TS: %" PRIu64 " ns | TX HW TS: %" PRIu64 " ns\n",
-			    stat_frame_type_to_string(frame_type), cycle_number,
-			    proc_first_us,
-			    app_config.application_base_cycle_time_ns / 1000, rx_hw_ts,
-			    rx_sw_ts, rx_app_ts, tx_sw_ts, tx_hw_ts);
+		{
+			struct round_trip_context *rtt = &round_trip_contexts[frame_type];
+			size_t idx = cycle_number % rtt->backlog_len;
+			uint64_t tx_01 = rtt->backlog ? rtt->backlog[idx].tx_01 : 0;
+			
+			log_message(LOG_LEVEL_WARNING,
+				    "ProcFirst OUTLIER [%s] Cycle %" PRIu64 ": %" PRIu64
+				    " us (exceeds cycle time %" PRIu64 " us) | "
+				    "RX HW TS: %" PRIu64 " ns | RX SW TS: %" PRIu64 " ns | "
+				    "RX App TS: %" PRIu64 " ns | "
+				    "TX SW TS: %" PRIu64 " ns | TX HW TS: %" PRIu64 " ns | "
+				    "TX 01 Time: %" PRIu64 " ns\n",
+				    stat_frame_type_to_string(frame_type), cycle_number,
+				    proc_first_us,
+				    app_config.application_base_cycle_time_ns / 1000, rx_hw_ts,
+				    rx_sw_ts, rx_app_ts, tx_sw_ts, tx_hw_ts,
+				    tx_01);
+		}
 	}
 
 	stat_update_min_max(proc_first_us, &stat->proc_first_min, &stat->proc_first_max);
