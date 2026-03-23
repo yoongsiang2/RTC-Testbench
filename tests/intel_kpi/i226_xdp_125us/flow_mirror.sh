@@ -59,23 +59,23 @@ igc_rx_queues_assign "${INTERFACE}" RXQUEUES
 
 setup_irqs "${INTERFACE}"
 
-# Find IRQ number for the TxRx-1 queue and set its affinity to CPU 2
+# Find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
 IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
 if [ -n "$IRQ_NUM" ]; then
-    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 2"
-    echo 2 > /proc/irq/${IRQ_NUM}/smp_affinity_list
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
+    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
 else
     echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
 fi
 
 # Find IRQ number for ${INTERFACE} (Tx HW ts irq) and set its affinity to CPU 1
-#IRQ_NUM=$(grep -E "${INTERFACE}$" /proc/interrupts | awk '{print $1}' | sed 's/://')
-#if [ -n "$IRQ_NUM" ]; then
-#    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 1"
-#    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
-#else
-#    echo "Warning: Could not find IRQ for ${INTERFACE}"
-#fi
+IRQ_NUM=$(grep -E "${INTERFACE}$" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 1"
+    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}"
+fi
 
 # echo 2 > /sys/class/net/${INTERFACE}/queues/tx-1/xps_cpus
 
