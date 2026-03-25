@@ -11,8 +11,8 @@ Application:
   ApplicationClockId: CLOCK_TAI
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 125us
-  ApplicationTxBaseOffsetNS: 75us
-  ApplicationRxBaseOffsetNS: 15us
+  ApplicationTxBaseOffsetNS: 90us
+  ApplicationRxBaseOffsetNS: 20us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
