@@ -34,8 +34,8 @@ ethtool -C ${INTERFACE} rx-usecs 0
 #
 # Split traffic between TSN High Streams and everything else.
 #
-ENTRY1_NS="500000" # TSN High Streams
-ENTRY2_NS="500000" # Everything else
+ENTRY1_NS="500000" # Everything else
+ENTRY2_NS="500000" # TSN High Streams
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -47,8 +47,8 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   map 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 \
   queues 1@0 1@1 \
   base-time ${BASETIME} \
-  sched-entry S 0x02 ${ENTRY1_NS} \
-  sched-entry S 0x03 ${ENTRY2_NS} \
+  sched-entry S 0x03 ${ENTRY1_NS} \
+  sched-entry S 0x02 ${ENTRY2_NS} \
   flags 0x02
 
 #
