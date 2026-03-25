@@ -15,11 +15,11 @@ cd "$(dirname "$0")"
 sleep 30
 
 # Configure flow
-./flow_ref.sh enp85s0
+./flow.sh enp85s0
 sleep 30
 
 # Start one instance of reference application
 cp ../../../build/xdp_kern_*.o .
-../../../build/reference -c reference.yaml > /dev/shm/ref.log &
+../../../build/reference -c reference.yaml > ref.log &
 
 exit 0

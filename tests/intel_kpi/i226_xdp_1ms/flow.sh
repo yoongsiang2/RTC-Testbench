@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 #
-# Setup Mirror's Tx and Rx traffic flows for Intel i226 NIC(s) KPI testing.
+# Setup Tx and Rx traffic flows for Intel i226 NIC(s) KPI testing.
 #
 
 set -e
@@ -26,14 +26,16 @@ BASETIME=$3
 
 load_kernel_modules
 
+napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
+
 igc_start "${INTERFACE}"
 ethtool -C ${INTERFACE} rx-usecs 0
 
 #
 # Split traffic between TSN High Streams and everything else.
 #
-ENTRY1_NS="500000" # Everything else
-ENTRY2_NS="500000" # TSN High Streams
+ENTRY1_NS="500000" # TSN High Streams
+ENTRY2_NS="500000" # Everything else
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -45,8 +47,8 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   map 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 \
   queues 1@0 1@1 \
   base-time ${BASETIME} \
-  sched-entry S 0x03 ${ENTRY1_NS} \
-  sched-entry S 0x02 ${ENTRY2_NS} \
+  sched-entry S 0x02 ${ENTRY1_NS} \
+  sched-entry S 0x03 ${ENTRY2_NS} \
   flags 0x02
 
 #
@@ -66,15 +68,6 @@ if [ -n "$IRQ_NUM" ]; then
     echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
 else
     echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
-fi
-
-# Find IRQ number for ${INTERFACE} (Tx HW ts irq) and set its affinity to CPU 1
-IRQ_NUM=$(grep -E "${INTERFACE}$" /proc/interrupts | awk '{print $1}' | sed 's/://')
-if [ -n "$IRQ_NUM" ]; then
-    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}) affinity to CPU 1"
-    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
-else
-    echo "Warning: Could not find IRQ for ${INTERFACE}"
 fi
 
 exit 0

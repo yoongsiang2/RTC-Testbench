@@ -12,7 +12,7 @@ Application:
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 1ms
   ApplicationTxBaseOffsetNS: 700us
-  ApplicationRxBaseOffsetNS: 200us
+  ApplicationRxBaseOffsetNS: 300us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
@@ -21,7 +21,7 @@ TsnHigh:
   TsnHighXdpZcMode: true
   TsnHighXdpWakeupMode: true
   TsnHighXdpBusyPollMode: true
-  TsnHighTxTimeStampEnabled: true
+  TsnHighTxTimeStampEnabled: false
   TsnHighVid: 100
   TsnHighNumFramesPerCycle: 1
   TsnHighPayloadPattern: |
@@ -44,7 +44,7 @@ TsnHigh:
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100
-  TsnHighRxWorkloadThreadCpu: 2
+  TsnHighRxWorkloadThreadCpu: 1
   TsnHighRxWorkloadThreadPriority: 80
 Log:
   LogThreadPriority: 1
