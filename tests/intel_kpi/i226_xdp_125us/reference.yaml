@@ -12,7 +12,7 @@ Application:
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 125us
   ApplicationTxBaseOffsetNS: 90us
-  ApplicationRxBaseOffsetNS: 20us
+  ApplicationRxBaseOffsetNS: 30us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
@@ -30,8 +30,8 @@ TsnHigh:
   TsnHighRxQueue: 1
   TsnHighTxQueue: 1
   TsnHighSocketPriority: 6
-  TsnHighTxThreadPriority: 98
-  TsnHighRxThreadPriority: 98
+  TsnHighTxThreadPriority: 86
+  TsnHighRxThreadPriority: 84
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
   TsnHighInterface: enp85s0
