@@ -8,7 +8,7 @@
 # CAT (Cache Allocation Technology) Setup Script for 16 CPU System.
 #
 
-RT_TEST_CORES=(1)
+RT_TEST_CORES=(1 2)
 
 L2_BASE_REG_MSR=0xd10
 L2_HIGHEST_COS_NUMBER=8
@@ -42,7 +42,7 @@ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 echo "=== CAT Configuration for 16 CPU System ==="
 echo "RT Cores: ${RT_TEST_CORES[*]}"
-echo "BE Cores: 0,2-15"
+echo "BE Cores: 0,3-15"
 echo ""
 
 # Check CAT support
@@ -185,8 +185,8 @@ echo ""
 echo "=== Phase 6: Configuring core associativity ==="
 
 # Configure Best Effort cores (all except RT cores)
-echo "Configuring Best Effort cores (0,2,3,4,5,6,7,8,9,10,11,12,13,14,15)..."
-be_cores=(0 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+echo "Configuring Best Effort cores (0,3,4,5,6,7,8,9,10,11,12,13,14,15)..."
+be_cores=(0 3 4 5 6 7 8 9 10 11 12 13 14 15)
 be_mask=$((L2_L3_BE_BIG_CORE_ASSOCIATIVITY << 32))
 
 for core in "${be_cores[@]}"; do
@@ -232,5 +232,5 @@ echo "Summary:"
 echo "- L2 cache: 8 waymask registers configured"
 echo "- L3 cache: 16 waymask registers configured"
 echo "- RT cores (${RT_TEST_CORES[*]}): Configured for Real-Time workloads"
-echo "- BE cores (0,2-15): Configured for Best-Effort workloads"
+echo "- BE cores (0,3-15): Configured for Best-Effort workloads"
 echo "- All MSR operations completed successfully"
