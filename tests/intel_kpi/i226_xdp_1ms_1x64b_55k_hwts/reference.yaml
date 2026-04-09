@@ -11,8 +11,8 @@ Application:
   ApplicationClockId: CLOCK_TAI
   # ApplicationBaseStartTimeNS: 0
   ApplicationBaseCycleTimeNS: 1ms
-  ApplicationTxBaseOffsetNS: 900us
-  ApplicationRxBaseOffsetNS: 100us
+  ApplicationTxBaseOffsetNS: 800us
+  ApplicationRxBaseOffsetNS: 200us
   ApplicationXdpProgram: xdp_kern_profinet_vid100.o
 TsnHigh:
   TsnHighEnabled: true
@@ -22,6 +22,8 @@ TsnHigh:
   TsnHighXdpWakeupMode: true
   TsnHighXdpBusyPollMode: true
   TsnHighTxTimeStampEnabled: false
+  TsnHighTxTimeEnabled: true
+  TsnHighTxTimeOffsetNS: 0us
   TsnHighVid: 100
   TsnHighNumFramesPerCycle: 1
   TsnHighPayloadPattern: |
