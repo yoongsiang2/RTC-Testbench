@@ -52,6 +52,14 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   flags 0x02
 
 #
+# ETF (Earliest TxTime First) qdisc for TSN High Stream (Tx Q 1).
+#
+tc qdisc replace dev ${INTERFACE} parent 100:2 etf \
+  clockid CLOCK_TAI \
+  delta 500000 \
+  offload
+
+#
 # Rx Queues Assignment.
 #
 # PCP 6 - Rx Q 1 - TSN High Stream
