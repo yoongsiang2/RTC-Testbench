@@ -44,8 +44,8 @@ TsnHigh:
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100
-  TsnHighRxWorkloadThreadCpu: 1
-  TsnHighRxWorkloadThreadPriority: 80
+  TsnHighRxWorkloadThreadCpu: 2
+  TsnHighRxWorkloadThreadPriority: 90
 Log:
   LogThreadPriority: 1
   LogThreadCpu: 0
