@@ -63,4 +63,13 @@ igc_end "${INTERFACE}"
 
 setup_irqs "${INTERFACE}"
 
+# Find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
+IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
+    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
+fi
+
 exit 0
