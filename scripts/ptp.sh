@@ -29,7 +29,7 @@ systemctl stop ntpd || true
 systemctl stop chrony || true
 
 # Start ptp with 802.1AS-2011 endstation profile
-ptp4l -2 -H -i ${INTERFACE} --socket_priority=4 --tx_timestamp_timeout=40 -f /etc/gPTP.cfg &
+ptp4l -2 -H -i ${INTERFACE} --socket_priority=4 --tx_timestamp_timeout=40 -f /etc/linuxptp/gPTP.cfg &
 
 # Wait for ptp4l
 sleep 10
