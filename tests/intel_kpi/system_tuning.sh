@@ -16,7 +16,7 @@ cpupower -c 1 idle-set -d 1
 cpupower -c 1 idle-set -d 2
 cpupower -c 1 idle-set -d 3
 cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
-tuna --cpus=1 --isolate
+sudo tuna isolate --cpu 1
 
 # Get total number of CPUs and configure all except CPU 1 for powersave
 TOTAL_CPUS=$(nproc)
