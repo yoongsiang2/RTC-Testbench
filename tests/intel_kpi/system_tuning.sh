@@ -18,11 +18,19 @@ cpupower -c 1 idle-set -d 3
 cpupower -c 1 frequency-set --min 3100M --max 3100M -g performance
 sudo tuna isolate --cpu 1
 
-# Get total number of CPUs and configure all except CPU 1 for powersave
+echo "Configuring CPU 2 for performance mode"
+cpupower -c 2 idle-set -d 0
+cpupower -c 2 idle-set -d 1
+cpupower -c 2 idle-set -d 2
+cpupower -c 2 idle-set -d 3
+cpupower -c 2 frequency-set --min 3100M --max 3100M -g performance
+sudo tuna isolate --cpu 2
+
+# Get total number of CPUs and configure all except CPU 1 and CPU 2 for powersave
 TOTAL_CPUS=$(nproc)
-echo "Configuring ${TOTAL_CPUS} CPUs for powersave mode (excluding CPU 1)"
+echo "Configuring ${TOTAL_CPUS} CPUs for powersave mode (excluding CPU 1 and CPU 2)"
 for ((cpu=0; cpu<TOTAL_CPUS; cpu++)); do
-    if [ $cpu -ne 1 ]; then
+    if [ $cpu -ne 1 ] && [ $cpu -ne 2 ]; then
         cpupower -c $cpu frequency-set --min 400M --max 2100M -g powersave
     fi
 done
@@ -33,10 +41,12 @@ done
 
 echo "Ring/Uncore Frequency fixed"
 wrmsr -p 1 0x620 0x2424
+wrmsr -p 2 0x620 0x2424
 
 echo "L3 cache isolation"
 wrmsr 0xc91 0xfc0
 wrmsr 0xc90 0x03f
 wrmsr -p 1 0xc8f 0x100000000
+wrmsr -p 2 0xc8f 0x100000000
 
 exit 0
