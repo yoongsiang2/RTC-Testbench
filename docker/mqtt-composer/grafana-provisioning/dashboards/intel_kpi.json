@@ -1226,6 +1226,10 @@
                                 "ProcFirstMin"
                               ],
                               "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "min"
                             }
                           ]
                         ],
@@ -1272,6 +1276,10 @@
                                 "ProcFirstAv"
                               ],
                               "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "mean"
                             }
                           ]
                         ],
@@ -1318,6 +1326,10 @@
                                 "ProcFirstMax"
                               ],
                               "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "max"
                             }
                           ]
                         ],
@@ -1379,6 +1391,7 @@
                   "color": {
                     "mode": "palette-classic"
                   },
+                  "min": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
