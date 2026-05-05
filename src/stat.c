@@ -359,6 +359,14 @@ static void stat_frame_workload_per_period(int id, enum stat_frame_type frame_ty
 {
 	struct workload_statistics *stat_per_period =
 		&statistics_per_period[frame_type].workload[id];
+	struct statistics *stat_per_period_main = &statistics_per_period[frame_type];
+	struct timespec rx_time = {};
+	uint64_t curr_time;
+
+	/* Record Rx timestamp in us */
+	clock_gettime(app_config.application_clock_id, &rx_time);
+	curr_time = ts_to_ns(&rx_time);
+	stat_per_period_main->time_stamp = curr_time;
 
 	if (stat_per_period->rx_workload_count >
 	    app_config.classes[frame_type].rx_workload_skip_count) {
