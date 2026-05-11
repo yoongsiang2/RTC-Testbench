@@ -839,7 +839,6 @@
                   "color": {
                     "mode": "palette-classic"
                   },
-                  "decimals": 3,
                   "fieldMinMax": false,
                   "min": 0,
                   "thresholds": {
