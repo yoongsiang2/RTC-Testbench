@@ -48,7 +48,7 @@
         "kind": "Panel",
         "spec": {
           "id": 10,
-          "title": "RT Workload Execution Time (Min/Avg/Max)",
+          "title": "RT Workload Execution Time (Jitter/Avg/Max)",
           "description": "",
           "links": [],
           "data": {
@@ -741,7 +741,7 @@
         "kind": "Panel",
         "spec": {
           "id": 12,
-          "title": "Round-Trip Time (Min/Avg/Max)",
+          "title": "Round-Trip Time (Jitter)",
           "description": "",
           "links": [],
           "data": {
@@ -797,106 +797,6 @@
                       }
                     },
                     "refId": "D",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "adeuu7g39883kc"
-                      },
-                      "spec": {
-                        "alias": "Average",
-                        "groupBy": [],
-                        "measurement": "reference",
-                        "orderByTime": "ASC",
-                        "policy": "default",
-                        "resultFormat": "time_series",
-                        "select": [
-                          [
-                            {
-                              "params": [
-                                "RoundTripAv"
-                              ],
-                              "type": "field"
-                            },
-                            {
-                              "params": [],
-                              "type": "mean"
-                            }
-                          ]
-                        ],
-                        "tags": [
-                          {
-                            "key": "TCName::field",
-                            "operator": "=",
-                            "value": "TsnHigh"
-                          },
-                          {
-                            "condition": "AND",
-                            "key": "RoundTripAv::field",
-                            "operator": ">",
-                            "value": "0"
-                          }
-                        ]
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "adeuu7g39883kc"
-                      },
-                      "spec": {
-                        "alias": "Maximum",
-                        "groupBy": [],
-                        "measurement": "reference",
-                        "orderByTime": "ASC",
-                        "policy": "default",
-                        "resultFormat": "time_series",
-                        "select": [
-                          [
-                            {
-                              "params": [
-                                "RoundTripMax"
-                              ],
-                              "type": "field"
-                            },
-                            {
-                              "params": [],
-                              "type": "max"
-                            }
-                          ]
-                        ],
-                        "tags": [
-                          {
-                            "key": "TCName::field",
-                            "operator": "=",
-                            "value": "TsnHigh"
-                          },
-                          {
-                            "condition": "AND",
-                            "key": "RoundTripMax::field",
-                            "operator": ">",
-                            "value": "0"
-                          }
-                        ]
-                      }
-                    },
-                    "refId": "B",
                     "hidden": false
                   }
                 }
@@ -1199,7 +1099,7 @@
         "kind": "Panel",
         "spec": {
           "id": 14,
-          "title": "Processing Latency  (Min/Avg/Max)",
+          "title": "Processing Latency  (Jitter)",
           "description": "",
           "links": [],
           "data": {
@@ -1255,106 +1155,6 @@
                       }
                     },
                     "refId": "D",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "adeuu7g39883kc"
-                      },
-                      "spec": {
-                        "alias": "Average",
-                        "groupBy": [],
-                        "measurement": "mirror",
-                        "orderByTime": "ASC",
-                        "policy": "default",
-                        "resultFormat": "time_series",
-                        "select": [
-                          [
-                            {
-                              "params": [
-                                "ProcFirstAv"
-                              ],
-                              "type": "field"
-                            },
-                            {
-                              "params": [],
-                              "type": "mean"
-                            }
-                          ]
-                        ],
-                        "tags": [
-                          {
-                            "key": "TCName::field",
-                            "operator": "=",
-                            "value": "TsnHigh"
-                          },
-                          {
-                            "condition": "AND",
-                            "key": "ProcFirstAv::field",
-                            "operator": ">",
-                            "value": "0"
-                          }
-                        ]
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "adeuu7g39883kc"
-                      },
-                      "spec": {
-                        "alias": "Maximum",
-                        "groupBy": [],
-                        "measurement": "mirror",
-                        "orderByTime": "ASC",
-                        "policy": "default",
-                        "resultFormat": "time_series",
-                        "select": [
-                          [
-                            {
-                              "params": [
-                                "ProcFirstMax"
-                              ],
-                              "type": "field"
-                            },
-                            {
-                              "params": [],
-                              "type": "max"
-                            }
-                          ]
-                        ],
-                        "tags": [
-                          {
-                            "key": "TCName::field",
-                            "operator": "=",
-                            "value": "TsnHigh"
-                          },
-                          {
-                            "condition": "AND",
-                            "key": "ProcFirstMax::field",
-                            "operator": ">",
-                            "value": "0"
-                          }
-                        ]
-                      }
-                    },
-                    "refId": "B",
                     "hidden": false
                   }
                 }
