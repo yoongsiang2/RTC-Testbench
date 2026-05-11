@@ -66,11 +66,13 @@
                         "name": "adeuu7g39883kc"
                       },
                       "spec": {
-                        "alias": "Minimum",
+                        "alias": "Jitter",
                         "groupBy": [],
                         "measurement": "mirror",
                         "orderByTime": "ASC",
                         "policy": "default",
+                        "rawQuery": true,
+                        "query": "SELECT max(\"RxWorkloadMax\") - min(\"RxWorkloadMin\") FROM \"mirror\" WHERE (\"TCName\" = 'TsnHigh') AND $timeFilter",
                         "resultFormat": "time_series",
                         "select": [
                           [
