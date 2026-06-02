@@ -26,7 +26,7 @@ BASETIME=$3
 
 load_kernel_modules
 
-napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
+# napi_defer_hard_irqs "${INTERFACE}" "${CYCLETIME_NS}"
 
 igc_start "${INTERFACE}"
 ethtool -C ${INTERFACE} rx-usecs 0
@@ -34,8 +34,8 @@ ethtool -C ${INTERFACE} rx-usecs 0
 #
 # Split traffic between TSN High Stream and everything else.
 #
-ENTRY1_NS="75000" # Everything else
-ENTRY2_NS="50000" # TSN High Stream
+ENTRY1_NS="50000" # TSN High Stream
+ENTRY2_NS="75000" # Everything else
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -47,8 +47,8 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   map 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 \
   queues 1@0 1@1 \
   base-time ${BASETIME} \
-  sched-entry S 0x03 ${ENTRY1_NS} \
-  sched-entry S 0x02 ${ENTRY2_NS} \
+  sched-entry S 0x02 ${ENTRY1_NS} \
+  sched-entry S 0x01 ${ENTRY2_NS} \
   flags 0x02
 
 #
@@ -60,5 +60,14 @@ RXQUEUES=(0 1 0 0 0 0 0 0 0 0)
 igc_rx_queues_assign "${INTERFACE}" RXQUEUES
 
 setup_irqs "${INTERFACE}"
+
+# Find IRQ number for the TxRx-1 queue and set its affinity to CPU 1
+IRQ_NUM=$(grep "${INTERFACE}-TxRx-1" /proc/interrupts | awk '{print $1}' | sed 's/://')
+if [ -n "$IRQ_NUM" ]; then
+    echo "Setting IRQ ${IRQ_NUM} (${INTERFACE}-TxRx-1) affinity to CPU 1"
+    echo 1 > /proc/irq/${IRQ_NUM}/smp_affinity_list
+else
+    echo "Warning: Could not find IRQ for ${INTERFACE}-TxRx-1"
+fi
 
 exit 0
