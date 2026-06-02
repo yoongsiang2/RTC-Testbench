@@ -15,7 +15,7 @@ cd "$(dirname "$0")"
 sleep 30
 
 # Configure flow
-./flow.sh enp3s0
+./flow_ref.sh enp3s0
 sleep 30
 
 # Start one instance of reference application

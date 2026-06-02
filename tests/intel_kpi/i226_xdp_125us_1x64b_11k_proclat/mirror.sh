@@ -15,7 +15,7 @@ cd "$(dirname "$0")"
 sleep 30
 
 # Configure flow
-./flow.sh enp3s0
+./flow_mirror.sh enp3s0
 sleep 30
 
 # Start one instance of mirror application
