@@ -44,15 +44,15 @@ TsnHigh:
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100
-  TsnHighRxWorkloadThreadCpu: 1
-  TsnHighRxWorkloadThreadPriority: 80
+  TsnHighRxWorkloadThreadCpu: 2
+  TsnHighRxWorkloadThreadPriority: 96
 Log:
   LogThreadPriority: 1
   LogThreadCpu: 0
   LogFile: /var/log/mirror_vid100.log
   LogLevel: Info
 LogMqtt:
-  LogMqtt: false
+  LogMqtt: true
   LogMqttThreadPriority: 10
   LogMqttThreadCpu: 0
   LogMqttBrokerIP: 127.0.0.1
