@@ -45,7 +45,7 @@ LogMqtt:
   LogMqtt: true
   LogMqttThreadPriority: 10
   LogMqttThreadCpu: 0
-  LogMqttBrokerIP: 127.0.0.1
+  LogMqttBrokerIP: 10.107.255.77
   LogMqttBrokerPort: 1883
   LogMqttMeasurementName: reference
 Debug:
