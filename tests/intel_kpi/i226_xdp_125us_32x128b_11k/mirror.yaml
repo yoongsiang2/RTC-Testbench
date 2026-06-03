@@ -34,7 +34,7 @@ TsnHigh:
   TsnHighRxThreadPriority: 98
   TsnHighTxThreadCpu: 1
   TsnHighRxThreadCpu: 1
-  TsnHighInterface: enp3s0
+  TsnHighInterface: enp85s0
   TsnHighDestination: a8:74:1d:9d:36:14
   TsnHighRxWorkloadEnabled: true
   TsnHighRxWorkloadFile: ../../workloads/pointer_chasing/pointer_chasing.so
@@ -44,8 +44,8 @@ TsnHigh:
   TsnHighRxWorkloadFunction: run_ptr_chasing
   TsnHighRxWorkloadPrewarm: false
   TsnHighRxWorkloadSkipCount: 100
-  TsnHighRxWorkloadThreadCpu: 1
-  TsnHighRxWorkloadThreadPriority: 80
+  TsnHighRxWorkloadThreadCpu: 2
+  TsnHighRxWorkloadThreadPriority: 96
 Log:
   LogThreadPriority: 1
   LogThreadCpu: 0
@@ -55,7 +55,7 @@ LogMqtt:
   LogMqtt: true
   LogMqttThreadPriority: 10
   LogMqttThreadCpu: 0
-  LogMqttBrokerIP: 127.0.0.1
+  LogMqttBrokerIP: 10.107.254.102
   LogMqttBrokerPort: 1883
   LogMqttMeasurementName: mirror
 Debug:
