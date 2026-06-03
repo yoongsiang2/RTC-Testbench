@@ -37,8 +37,8 @@ sleep 5
 #
 # Split traffic between TSN High Stream and everything else.
 #
-ENTRY1_NS="100000" # Everything else
-ENTRY2_NS="25000"  # TSN High Stream
+ENTRY1_NS="75000" # Everything else
+ENTRY2_NS="50000"  # TSN High Stream
 
 #
 # Tx Assignment with Qbv and full hardware offload.
@@ -50,7 +50,7 @@ tc qdisc replace dev ${INTERFACE} handle 100 parent root taprio num_tc 2 \
   map 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 \
   queues 1@0 1@1 \
   base-time ${BASETIME} \
-  sched-entry S 0x01 ${ENTRY1_NS} \
+  sched-entry S 0x03 ${ENTRY1_NS} \
   sched-entry S 0x02 ${ENTRY2_NS} \
   flags 0x02
 
