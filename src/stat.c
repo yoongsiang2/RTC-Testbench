@@ -455,7 +455,7 @@ void stat_frames_sent_batch(enum stat_frame_type frame_type, uint64_t cycle_numb
 {
 	struct round_trip_context *rtt = &round_trip_contexts[frame_type];
 	struct statistics *stat = &global_statistics[frame_type];
-	size_t idx = cycle_number % rtt->backlog_len;
+	uint64_t fpc = app_config.classes[frame_type].num_frames_per_cycle;
 	struct timespec tx_time = {};
 
 	if (frame_count == 1) {
@@ -469,9 +469,23 @@ void stat_frames_sent_batch(enum stat_frame_type frame_type, uint64_t cycle_numb
 	if ((log_stat_user_selected == LOG_REFERENCE ||
 	     log_stat_user_selected == LOG_TX_TIMESTAMPS) &&
 	    rtt->backlog) {
-		/* Record Tx SW timestamp for the first frame in the cycle */
+		uint64_t step = (fpc > 0) ? fpc : 1;
+		uint64_t i;
+
+		/*
+		 * Record Tx SW timestamp at the first-frame slot of each cycle covered
+		 * by this batch. Normally a batch covers exactly one cycle (frame_count
+		 * == fpc) and this writes a single slot. If a mirror batch happens to
+		 * span multiple cycles, every covered cycle still gets a fresh sw_ts so
+		 * the completion processor never reads a stale value from a previous
+		 * backlog wrap.
+		 */
 		app_clock_get(&tx_time);
-		rtt->backlog[idx].sw_ts = ts_to_ns(&tx_time);
+		for (i = 0; i < frame_count; i += step) {
+			size_t idx = (cycle_number + i) % rtt->backlog_len;
+
+			rtt->backlog[idx].sw_ts = ts_to_ns(&tx_time);
+		}
 	}
 
 	/* Increment stats by frame_count */

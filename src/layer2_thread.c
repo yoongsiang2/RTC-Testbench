@@ -333,6 +333,7 @@ static void *generic_l2_xdp_tx_thread_routine(void *data)
 	xsk = thread_context->xsk;
 	xsk->tx_hwts.rtt = &round_trip_contexts[GENERICL2_FRAME_TYPE];
 	xsk->tx_hwts.frames_per_cycle = l2_config->num_frames_per_cycle;
+	xsk->tx_hwts.meta_data_offset = thread_context->meta_data_offset;
 
 	ret = get_interface_mac_address(l2_config->interface, source, ETH_ALEN);
 	if (ret < 0) {
@@ -421,18 +422,6 @@ static void *generic_l2_xdp_tx_thread_routine(void *data)
 			xsk->outstanding_tx += received;
 			thread_context->received_frames = 0;
 			xdp_complete_tx(xsk);
-
-#ifdef TX_TIMESTAMP
-			if (received > 0 && l2_config->tx_hwtstamp_enabled) {
-				/*
-				 * TX HW timestamp becomes available in the next cycle
-				 * after the packet is transmitted.
-				 * This is one cycle later than SW timestamp tracked
-				 * using sequence_counter
-				 */
-				xsk->tx_hwts.seq_lagged = sequence_counter;
-			}
-#endif
 
 			pthread_mutex_unlock(&thread_context->xdp_data_mutex);
 		}
@@ -743,6 +732,9 @@ struct thread_context *generic_l2_threads_create(void)
 		}
 	}
 
+	thread_context->meta_data_offset =
+		get_meta_data_offset(GENERICL2_FRAME_TYPE, SECURITY_MODE_NONE);
+
 	ret = create_rt_thread(&thread_context->tx_task_id, l2_config->tx_thread_priority,
 			       l2_config->tx_thread_cpu,
 			       l2_config->xdp_enabled ? generic_l2_xdp_tx_thread_routine
@@ -769,9 +761,6 @@ struct thread_context *generic_l2_threads_create(void)
 		fprintf(stderr, "Failed to create L2 Workload context!\n");
 		goto err_thread_wl;
 	}
-
-	thread_context->meta_data_offset =
-		get_meta_data_offset(GENERICL2_FRAME_TYPE, SECURITY_MODE_NONE);
 
 out:
 	return thread_context;

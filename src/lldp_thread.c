@@ -493,6 +493,9 @@ int lldp_threads_create(struct thread_context *thread_context)
 		}
 	}
 
+	thread_context->meta_data_offset =
+		get_meta_data_offset(LLDP_FRAME_TYPE, SECURITY_MODE_NONE);
+
 	ret = create_rt_thread(&thread_context->tx_task_id, lldp_config->tx_thread_priority,
 			       lldp_config->tx_thread_cpu, lldp_tx_thread_routine, thread_context,
 			       "LldpTxThread");
@@ -519,9 +522,6 @@ int lldp_threads_create(struct thread_context *thread_context)
 		fprintf(stderr, "Failed to create Lldp Rx Thread!\n");
 		goto err_thread_rx;
 	}
-
-	thread_context->meta_data_offset =
-		get_meta_data_offset(LLDP_FRAME_TYPE, SECURITY_MODE_NONE);
 
 out:
 	ret = 0;
