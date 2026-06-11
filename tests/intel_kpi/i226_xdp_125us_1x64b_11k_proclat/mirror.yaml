@@ -55,7 +55,7 @@ LogMqtt:
   LogMqtt: false
   LogMqttThreadPriority: 10
   LogMqttThreadCpu: 0
-  LogMqttBrokerIP: 10.107.254.102
+  LogMqttBrokerIP: 127.0.0.1
   LogMqttBrokerPort: 1883
   LogMqttMeasurementName: mirror
 Debug:
