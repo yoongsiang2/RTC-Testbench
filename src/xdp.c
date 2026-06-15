@@ -327,8 +327,8 @@ static int xdp_configure_socket_options(struct xdp_socket *xsk, bool busy_poll_m
 		return ret;
 	}
 
-	/* poll for 20us if socket not ready */
-	opt = 20;
+	/* poll for 45us if socket not ready */
+	opt = 45;
 	ret = setsockopt(xsk_socket__fd(xsk->xsk), SOL_SOCKET, SO_BUSY_POLL, (void *)&opt,
 			 sizeof(opt));
 	if (ret) {
