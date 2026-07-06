@@ -109,6 +109,7 @@ struct application_config {
 	uint64_t application_rx_base_offset_ns;
 	char *application_xdp_program;
 	size_t application_xdp_program_length;
+	bool application_configure_cpu_latency;
 	/* Traffic class configurations */
 	struct traffic_class_config classes[NUM_FRAME_TYPES];
 	/* Logging */

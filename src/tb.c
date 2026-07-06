@@ -159,7 +159,8 @@ void tb_startup(int argc, char *argv[], struct tb_startup_mode *mode)
 		exit(EXIT_FAILURE);
 	}
 
-	configure_cpu_latency();
+	if (app_config.application_configure_cpu_latency)
+		configure_cpu_latency();
 
 	setup_signals();
 

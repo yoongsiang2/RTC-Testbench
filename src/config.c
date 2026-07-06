@@ -297,6 +297,8 @@ int config_read_from_file(const char *config_file)
 			CONFIG_STORE_TIME_PARAM(ApplicationRxBaseOffsetNS,
 						application_rx_base_offset_ns);
 			CONFIG_STORE_STRING_PARAM(ApplicationXdpProgram, application_xdp_program);
+			CONFIG_STORE_BOOL_PARAM(ApplicationConfigureCpuLatency,
+						application_configure_cpu_latency);
 
 			CONFIG_STORE_BOOL_PARAM_CLASS(TsnHighEnabled, enabled);
 			CONFIG_STORE_BOOL_PARAM_CLASS(TsnHighXdpEnabled, xdp_enabled);
@@ -682,6 +684,8 @@ void config_print_values(void)
 	printf("ApplicationTxBaseOffsetNS=%" PRIu64 "\n", app_config.application_tx_base_offset_ns);
 	printf("ApplicationRxBaseOffsetNS=%" PRIu64 "\n", app_config.application_rx_base_offset_ns);
 	printf("ApplicationXdpProgram=%s\n", app_config.application_xdp_program);
+	printf("ApplicationConfigureCpuLatency=%s\n",
+	       app_config.application_configure_cpu_latency ? "True" : "False");
 	printf("--------------------------------------------------------------------------------"
 	       "\n");
 
@@ -1100,6 +1104,7 @@ int config_set_defaults(bool mirror_enabled)
 	app_config.application_tx_base_offset_ns = 400000;
 	app_config.application_rx_base_offset_ns = 200000;
 	app_config.application_xdp_program = NULL;
+	app_config.application_configure_cpu_latency = true;
 
 	/* TSN High */
 	conf = &app_config.classes[TSN_HIGH_FRAME_TYPE];
