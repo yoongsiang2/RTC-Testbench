@@ -48,6 +48,10 @@ Possible parameters include:
    * - ApplicationXdpProgram (String)
      - Application specific XDP program
 
+   * - ApplicationConfigureCpuLatency (Boolean)
+     - Prevent all CPUs from entering deep sleep states via ``/dev/cpu_dma_latency`` to reduce
+       wakeup latency (default ``true``). Set to ``false`` to let idle cores save power.
+
    * - <Class>Enabled (Boolean)
      - Selects whether this traffic is active or not
 
