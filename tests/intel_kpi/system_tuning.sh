@@ -22,8 +22,15 @@ tuna isolate --cpus=1
 TOTAL_CPUS=$(nproc --all)
 echo "Configuring ${TOTAL_CPUS} CPUs for powersave mode (excluding CPU 1)"
 for ((cpu = 0; cpu < TOTAL_CPUS; cpu++)); do
-  if [ $cpu -ne 1 ]; then
-    cpupower -c $cpu frequency-set --min 400M --max 1900M -g powersave
+  if [ "$cpu" -ne 1 ]; then
+    BASE_FREQ_PATH="/sys/devices/system/cpu/cpu${cpu}/cpufreq/base_frequency"
+    if [ -r "$BASE_FREQ_PATH" ]; then
+      BASE_FREQ_KHZ=$(cat "$BASE_FREQ_PATH")
+      BASE_FREQ_MHZ=$((BASE_FREQ_KHZ / 1000))
+      cpupower -c "$cpu" frequency-set --max "${BASE_FREQ_MHZ}M" -g powersave
+    else
+      echo "Warning: Could not read ${BASE_FREQ_PATH}, skipping CPU ${cpu}"
+    fi
   fi
 done
 
